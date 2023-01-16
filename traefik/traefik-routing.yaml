@@ -1,0 +1,32 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: routing
+spec:
+  entryPoints:
+    - web
+
+  routes:
+    - match: PathPrefix(`/api/orders`)
+      kind: Rule
+      services:
+        - name: ms-order
+          port: 80
+    - match: PathPrefix(`/`)
+      kind: Rule
+      match: Host(`grafana.localhost`)
+      services:
+        - name: grafana
+          port: 80
+    - match: PathPrefix(`/`)
+      kind: Rule
+      match: Host(`prometheus.localhost`)
+      services:
+        - name: prometheus-stack-kube-prom-prometheus
+          port: 9090
+    - match: PathPrefix(`/`)
+      kind: Rule
+      match: Host(`jaeger.localhost`)
+      services:
+        - name: jaeger-jaeger-operator-jaeger-query
+          port: 16686

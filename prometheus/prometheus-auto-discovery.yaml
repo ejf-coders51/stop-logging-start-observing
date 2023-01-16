@@ -1,0 +1,63 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: rabbitmq
+  labels:
+    release: prometheus-stack
+spec:
+  endpoints:
+    - port: prometheus
+      scheme: http
+      interval: 10s
+      scrapeTimeout: 9s
+    - port: prometheus-tls
+      scheme: https
+      interval: 10s
+      scrapeTimeout: 9s
+      tlsConfig:
+        insecureSkipVerify: true
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: rabbitmq
+  namespaceSelector:
+    any: true
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: rabbitmq-cluster-operator
+  namespace: default
+  labels:
+    release: prometheus-stack
+spec:
+  podMetricsEndpoints:
+    - port: metrics
+      interval: 10s
+      scrapeTimeout: 9s
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: rabbitmq-operator
+  namespaceSelector:
+    matchNames:
+      - rabbitmq-system
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: traefik
+  namespace: default
+  labels:
+    release: prometheus-stack
+spec:
+  podMetricsEndpoints:
+    - port: metrics
+      interval: 10s
+      scrapeTimeout: 9s
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: traefik
+  namespaceSelector:
+    matchNames:
+      - default
+---
+

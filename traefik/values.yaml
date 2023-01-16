@@ -1,0 +1,10 @@
+image:
+  name: traefik
+  pullPolicy: IfNotPresent
+service:
+  type: NodePort
+ports:
+  web:
+    nodePort: 30000
+  websecure:
+    nodePort: 30001
