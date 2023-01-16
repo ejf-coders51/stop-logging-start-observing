@@ -1,0 +1,101 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: pizzify-order
+  labels:
+    app.kubernetes.io/name: pizzify-order
+    app.kubernetes.io/instance: pizzify-order
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+  selector:
+    app: pizzify-order
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pizzify-job
+  labels:
+    app.kubernetes.io/name: pizzify-job
+    app.kubernetes.io/instance: pizzify-job
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+  selector:
+    app: pizzify-job
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pizzify-fleet1
+  labels:
+    app.kubernetes.io/name: pizzify-fleet1
+    app.kubernetes.io/instance: pizzify-fleet1
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+  selector:
+    app: pizzify-fleet1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pizzify-fleet2
+  labels:
+    app.kubernetes.io/name: pizzify-fleet2
+    app.kubernetes.io/instance: pizzify-fleet2
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+  selector:
+    app: pizzify-fleet2
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pizzify-fleet3
+  labels:
+    app.kubernetes.io/name: pizzify-fleet3
+    app.kubernetes.io/instance: pizzify-fleet3
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+  selector:
+    app: pizzify-fleet3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pizzify-ui
+  labels:
+    app.kubernetes.io/name: pizzify-ui
+    app.kubernetes.io/instance: pizzify-ui
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5000
+  selector:
+    app: pizzify-ui

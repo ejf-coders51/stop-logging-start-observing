@@ -8,3 +8,12 @@ ports:
     nodePort: 30000
   websecure:
     nodePort: 30001
+logs:
+  general:
+    level: INFO
+metrics:
+  prometheus:
+    entryPoint: metrics
+    addEntryPointsLabels: true
+    addRoutersLabels: true
+    addServicesLabels: true

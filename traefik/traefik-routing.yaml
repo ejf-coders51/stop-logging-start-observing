@@ -9,8 +9,9 @@ spec:
   routes:
     - match: PathPrefix(`/api/orders`)
       kind: Rule
+      match: Host(`order.localhost`)
       services:
-        - name: ms-order
+        - name: pizzify-order
           port: 80
     - match: PathPrefix(`/`)
       kind: Rule
@@ -30,3 +31,15 @@ spec:
       services:
         - name: jaeger-jaeger-operator-jaeger-query
           port: 16686
+    - match: PathPrefix(`/`)
+      kind: Rule
+      match: Host(`otel.localhost`)
+      services:
+        - name: otel-collector-daemonset-collector
+          port: 4318
+    - match: PathPrefix(`/`)
+      kind: Rule
+      match: Host(`app.localhost`)
+      services:
+        - name: pizzify-ui
+          port: 80

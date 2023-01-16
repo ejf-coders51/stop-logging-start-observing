@@ -12,8 +12,8 @@ spec:
       scrapeTimeout: 9s
     - port: prometheus-tls
       scheme: https
-      interval: 10s
-      scrapeTimeout: 9s
+      interval: 5s
+      scrapeTimeout: 4s
       tlsConfig:
         insecureSkipVerify: true
   selector:
@@ -32,8 +32,8 @@ metadata:
 spec:
   podMetricsEndpoints:
     - port: metrics
-      interval: 10s
-      scrapeTimeout: 9s
+      interval: 5s
+      scrapeTimeout: 4s
   selector:
     matchLabels:
       app.kubernetes.io/component: rabbitmq-operator
@@ -51,8 +51,8 @@ metadata:
 spec:
   podMetricsEndpoints:
     - port: metrics
-      interval: 10s
-      scrapeTimeout: 9s
+      interval: 5s
+      scrapeTimeout: 5s
   selector:
     matchLabels:
       app.kubernetes.io/name: traefik

@@ -1,0 +1,219 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: pizzify-order
+  name: pizzify-order
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pizzify-order
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: pizzify-order
+    spec:
+      containers:
+        - image: coders51/pizzify:be
+          name: pizzify-order
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+          env:
+            - name: SERVICE_NAME
+              value: "order"
+            - name: POSTGRES_HOST
+              value: "db-order-postgresql.default.svc.cluster.local"
+            - name: POSTGRES_DB
+              value: "pizzify_order_dev"
+            - name: AMQP_URI
+              value: "amqp://app:password@rabbitmq.default.svc.cluster.local:5672"
+            - name: OTEL_COLLECTOR
+              value: "http://otel-collector-daemonset-collector:4318"
+            - name: LOKI_HOST
+              value: "http://loki-stack:3100"
+          command: ["/bin/sh"]
+          args:
+            [
+              "-c",
+              "node -r './dist/infra/instrumentation.js' dist/order/server.js",
+            ]
+          resources: {}
+status: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: pizzify-job
+  name: pizzify-job
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pizzify-job
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: pizzify-job
+    spec:
+      containers:
+        - image: coders51/pizzify:be
+          name: pizzify-job
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+          env:
+            - name: SERVICE_NAME
+              value: "job"
+            - name: FLEET1
+              value: "pizzify-fleet1.default.svc.cluster.local"
+            - name: FLEET2
+              value: "pizzify-fleet2.default.svc.cluster.local"
+            - name: FLEET3
+              value: "pizzify-fleet3.default.svc.cluster.local"
+            - name: POSTGRES_HOST
+              value: "db-job-postgresql.default.svc.cluster.local"
+            - name: POSTGRES_DB
+              value: "pizzify_job_dev"
+            - name: AMQP_URI
+              value: "amqp://app:password@rabbitmq.default.svc.cluster.local:5672"
+            - name: OTEL_COLLECTOR
+              value: "http://otel-collector-daemonset-collector:4318"
+            - name: LOKI_HOST
+              value: "http://loki-stack:3100"
+          command: ["/bin/sh"]
+          args:
+            [
+              "-c",
+              "node -r './dist/infra/instrumentation.js' dist/job/server.js",
+            ]
+          resources: {}
+status: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: pizzify-fleet1
+  name: pizzify-fleet1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pizzify-fleet1
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: pizzify-fleet1
+    spec:
+      containers:
+        - image: coders51/pizzify:be
+          name: pizzify-fleet1
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+          env:
+            - name: SERVICE_NAME
+              value: "fleet1"
+          command: ["/bin/sh"]
+          args: ["-c", "node dist/fleet/server.js"]
+          resources: {}
+status: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: pizzify-fleet2
+  name: pizzify-fleet2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pizzify-fleet2
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: pizzify-fleet2
+    spec:
+      containers:
+        - image: coders51/pizzify:be
+          name: pizzify-fleet2
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+          env:
+            - name: SERVICE_NAME
+              value: "fleet2"
+          command: ["/bin/sh"]
+          args: ["-c", "node dist/fleet/server.js"]
+          resources: {}
+status: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: pizzify-fleet3
+  name: pizzify-fleet3
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pizzify-fleet3
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: pizzify-fleet3
+    spec:
+      containers:
+        - image: coders51/pizzify:be
+          name: pizzify-fleet3
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+          env:
+            - name: SERVICE_NAME
+              value: "fleet3"
+          command: ["/bin/sh"]
+          args: ["-c", "node dist/fleet/server.js"]
+          resources: {}
+status: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: pizzify-ui
+  name: pizzify-ui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pizzify-ui
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: pizzify-ui
+    spec:
+      containers:
+        - image: coders51/pizzify:fe
+          name: pizzify-ui
+          ports:
+            - containerPort: 5000
+              protocol: TCP
+          env:
+            - name: OTEL_COLLECTOR
+              value: "http://otel.localhost"
+            - name: ORDER
+              value: "order.localhost"
+          resources: {}
+status: {}

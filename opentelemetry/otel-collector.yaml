@@ -2,7 +2,6 @@ apiVersion: opentelemetry.io/v1alpha1
 kind: OpenTelemetryCollector
 metadata:
   name: otel-collector-daemonset
-  # namespace: otel-collector
 spec:
   mode: daemonset
   config: |
@@ -14,20 +13,40 @@ spec:
           grpc:
             endpoint: "0.0.0.0:4317"
           http:
+            include_metadata: true
+            cors:
+              allowed_origins:
+                - http://app.localhost
             endpoint: "0.0.0.0:4318"  
     processors:
-    extensions:
-      health_check: {}
+      batch:
+        send_batch_size: 10000
+        timeout: 10s
+
+      memory_limiter:
+        check_interval: 5s
+        limit_percentage: 50
+        spike_limit_percentage: 30
+
     exporters:
       jaeger:
         endpoint: jaeger-jaeger-operator-jaeger-collector:14250
         tls:
           insecure: true
-      logging:
+      prometheusremotewrite:
+        endpoint: "http://prometheus-stack-kube-prom-prometheus:9090/api/v1/write"
+
+    extensions:
+      health_check:
+
     service:
       extensions: [health_check]
       pipelines:
         traces:
           receivers: [otlp]
-          processors: []
+          processors: [memory_limiter, batch]
           exporters: [jaeger]
+        metrics:
+          receivers: [otlp]
+          processors: [memory_limiter, batch]
+          exporters: [prometheusremotewrite]
